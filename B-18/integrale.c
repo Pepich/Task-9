@@ -19,7 +19,7 @@ double abs(double x)
     return x > 0 ? x : -x;
 }
 
-// Returns the function value for x if x > 0, returns -1 else
+// Returns the function value for x if x > 0, sets error message to -2 and returns 0 elsewise
 double f(double x)
 {
     if (x <= 0)
@@ -31,7 +31,7 @@ double f(double x)
     return log(x)/x;
 }
 
-// As the integral can only be positive (given b > a), returns -1 for n <= 0, else returns the integral approximation
+// returns the integral via iteration if the parameters are ok, sets the error to -1 and returns 0 elsewise
 double trapez(double a, double b, int n)
 {
     // If n <= 0 (aka 0 or less iterations), return -1 as error value
@@ -46,10 +46,12 @@ double trapez(double a, double b, int n)
     double result = 0;
     double h = (b-a)/n;
 
+    // Iterative calculation of the integral
     for (int i = 0; i < n; i++)
     {
 	result += f(a+i*h);
     }
+
     result *= h/2;
     return result;
 }
@@ -71,13 +73,19 @@ int main(void)
 	n += 5;
 	rp = r;
      	r = trapez(a, b, n);
+
+	// Cancel the loop when the approximation is close enough
 	if ((abs(rp-r)/abs(r))<limit)
 	    done = 1;
+	// Cancel the loop when too many iterations are about to be made
 	if (n > 100)
 	    done = 1;
+	// Cancel the loop when an error has occured
 	if (error != 0)
 	    done = 1;
     }
+    
+    // Program output
     switch (error)
     {
 	case 0:
